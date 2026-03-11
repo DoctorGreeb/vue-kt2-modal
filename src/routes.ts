@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, type RouteLocationNormalized } from 'vue-router';
 import HomePage from './pages/HomePage.vue';
 import InvalidPage from './pages/InvalidPage.vue';
 import LoginPage from './pages/LoginPage.vue';
@@ -12,7 +12,7 @@ const routes = [
     component: HomePage
   },
   {
-    path: '/invalid',
+    path: '/:pathMatch(.*)*',
     name: 'InvalidPage',
     component: InvalidPage
   },
@@ -21,10 +21,14 @@ const routes = [
     name: 'LoginPage',
     component: LoginPage
   },
-  {
-    path: '/profile',
-    name: 'ProfilePage',
-    component: ProfilePage
+  { 
+    path: '/profile', 
+    component: ProfilePage,
+    beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: any) => {
+      const token = localStorage.getItem('token')
+      if (!token) next('/login')
+      else next()
+    }
   },
   {
     path: '/users',
